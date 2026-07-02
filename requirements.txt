@@ -1,0 +1,14 @@
+# Local dev / testing (mirrors what Databricks Free Edition provides at runtime)
+pyspark==3.5.1
+delta-spark==3.2.0
+faker==26.0.0
+pandas==2.2.2
+numpy==1.26.4
+
+# dbt
+dbt-databricks==1.8.3
+
+# RAG bonus (notebook 04) — modèle local, pas de clé API nécessaire
+sentence-transformers==3.0.1
+transformers==4.44.2
+torch==2.4.0
