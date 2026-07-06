@@ -1,0 +1,4 @@
+# Copy to terraform.tfvars (gitignored) and fill in your own workspace's value.
+# Find it with: databricks external-locations list
+managed_storage_root = "s3://your-bucket/uc/<metastore-id>/<workspace-id>"
+owner_email          = "you@example.com"
