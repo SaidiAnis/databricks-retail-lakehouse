@@ -1,0 +1,13 @@
+resources:
+  jobs:
+    bronze_ingestion:
+      name: bronze_ingestion
+      tasks:
+        - task_key: ingest_online_retail
+          notebook_task:
+            notebook_path: ../../../notebooks/01_bronze_ingestion.py
+            base_parameters:
+              raw_path: /Volumes/retail/bronze/raw_landing/Online Retail.xlsx
+              catalog: retail
+              bronze_schema: bronze
+              table_name: online_retail

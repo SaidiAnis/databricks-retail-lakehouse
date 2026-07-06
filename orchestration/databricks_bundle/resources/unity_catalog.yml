@@ -1,0 +1,22 @@
+resources:
+  schemas:
+    bronze_schema:
+      name: bronze
+      catalog_name: retail
+      comment: Raw ingested data, no transformations.
+    staging_schema:
+      name: staging
+      catalog_name: retail
+      comment: Cleaned/typed data, dbt staging models.
+    marts_schema:
+      name: marts
+      catalog_name: retail
+      comment: Business-ready aggregates, dbt marts models.
+
+  volumes:
+    raw_landing:
+      name: raw_landing
+      catalog_name: retail
+      schema_name: ${resources.schemas.bronze_schema.name}
+      volume_type: MANAGED
+      comment: Landing zone for raw source files before bronze ingestion.
