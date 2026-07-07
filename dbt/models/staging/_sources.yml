@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: bronze
+    catalog: retail
+    schema: bronze
+    tables:
+      - name: online_retail
+        description: Raw Online Retail transactions, ingested as-is by the bronze notebook.

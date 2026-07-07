@@ -1,0 +1,14 @@
+# Copy to ~/.dbt/profiles.yml (outside the repo, dbt's default location) and fill in your values.
+# host/token: same workspace as `databricks configure --token`.
+# http_path: SQL Warehouse > Connection details > HTTP Path.
+retail_lakehouse:
+  target: dev
+  outputs:
+    dev:
+      type: databricks
+      catalog: retail
+      schema: default
+      host: "{{ env_var('DATABRICKS_HOST') }}"
+      http_path: "{{ env_var('DATABRICKS_HTTP_PATH') }}"
+      token: "{{ env_var('DATABRICKS_TOKEN') }}"
+      threads: 4
