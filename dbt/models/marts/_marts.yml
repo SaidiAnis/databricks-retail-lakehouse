@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: dim_products
+    description: One row per product code.
+    columns:
+      - name: product_code
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_customers
+    description: One row per known customer (excludes guest checkouts).
+    columns:
+      - name: customer_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_dates
+    description: Calendar spine covering the invoice date range.
+    columns:
+      - name: date_day
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_sales
+    description: One row per invoice line item.
+    columns:
+      - name: invoice_line_id
+        data_tests:
+          - unique
+          - not_null
+      - name: product_code
+        data_tests:
+          - relationships:
+              to: ref('dim_products')
+              field: product_code
+      - name: customer_id
+        data_tests:
+          - relationships:
+              to: ref('dim_customers')
+              field: customer_id
+      - name: date_day
+        data_tests:
+          - relationships:
+              to: ref('dim_dates')
+              field: date_day
