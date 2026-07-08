@@ -1,6 +1,10 @@
 bundle:
   name: databricks-retail-lakehouse
 
+variables:
+  warehouse_id:
+    description: SQL Warehouse ID used by the dbt job task (find with `databricks warehouses list`).
+
 include:
   - orchestration/databricks_bundle/resources/*.yml
 

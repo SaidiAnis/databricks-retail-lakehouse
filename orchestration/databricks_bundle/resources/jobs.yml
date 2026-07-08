@@ -1,7 +1,7 @@
 resources:
   jobs:
     bronze_ingestion:
-      name: bronze_ingestion
+      name: retail_pipeline
       tasks:
         - task_key: ingest_online_retail
           notebook_task:
@@ -11,3 +11,13 @@ resources:
               catalog: retail
               bronze_schema: bronze
               table_name: online_retail
+
+        - task_key: dbt_transform
+          depends_on:
+            - task_key: ingest_online_retail
+          notebook_task:
+            notebook_path: ../../../notebooks/02_dbt_transform.py
+            base_parameters:
+              dbt_project_dir: ${workspace.file_path}/dbt
+              warehouse_http_path: /sql/1.0/warehouses/${var.warehouse_id}
+              catalog: retail
