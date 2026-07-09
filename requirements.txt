@@ -1,7 +1,9 @@
 # dbt
 dbt-databricks==1.8.3
 
-# RAG bonus (notebook 04) — modèle local, pas de clé API nécessaire
-sentence-transformers==3.0.1
-transformers==4.44.2
-torch==2.4.0
+# Text-to-SQL chat app (app/) — generation runs on Databricks (ai_query),
+# these are only needed to run the local FastAPI server and connect to the
+# SQL Warehouse.
+fastapi==0.115.0
+uvicorn==0.30.6
+databricks-sql-connector

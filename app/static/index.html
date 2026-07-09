@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Retail Lakehouse</title>
+  <link rel="stylesheet" href="/static/app.css" />
+</head>
+<body>
+  <div class="app">
+    <div class="chat" id="chat">
+      <div class="empty-state" id="empty-state">
+        <h1>Retail Lakehouse</h1>
+        <p>Ask a question about products, customers, or sales.</p>
+        <div class="suggestions" id="suggestions">
+          <button class="suggestion" data-question="What is the total revenue by country?">
+            <span class="suggestion-title">Total revenue by country</span>
+            <span class="suggestion-sub">Break down sales across markets</span>
+          </button>
+          <button class="suggestion" data-question="Who are the top 5 customers by total spend?">
+            <span class="suggestion-title">Top 5 customers</span>
+            <span class="suggestion-sub">Rank customers by total spend</span>
+          </button>
+          <button class="suggestion" data-question="What are the best-selling products by quantity?">
+            <span class="suggestion-title">Best-selling products</span>
+            <span class="suggestion-sub">Rank products by units sold</span>
+          </button>
+        </div>
+      </div>
+      <div class="messages" id="messages"></div>
+    </div>
+
+    <div class="composer">
+      <form id="ask-form">
+        <button type="button" class="library-btn" id="library-btn" aria-label="Browse example questions">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M4 6h16M4 12h16M4 18h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <input id="question-input" type="text" placeholder="Message Retail Lakehouse..." autocomplete="off" />
+        <button type="submit" class="send-btn" aria-label="Send">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M12 19V5M12 5L5 12M12 5L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="library-backdrop">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Question library">
+      <div class="modal-header">
+        <h2>Question library</h2>
+        <button type="button" class="modal-close" id="library-close" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="modal-body" id="library-body">
+        <div class="library-group">
+          <h3>Sales</h3>
+          <button class="library-item" data-question="What is the total revenue by country?">What is the total revenue by country?</button>
+          <button class="library-item" data-question="What was the total revenue in December 2010?">What was the total revenue in December 2010?</button>
+          <button class="library-item" data-question="How many orders were placed on weekends?">How many orders were placed on weekends?</button>
+        </div>
+        <div class="library-group">
+          <h3>Customers</h3>
+          <button class="library-item" data-question="Who are the top 5 customers by total spend?">Who are the top 5 customers by total spend?</button>
+          <button class="library-item" data-question="Which country has the most customers?">Which country has the most customers?</button>
+        </div>
+        <div class="library-group">
+          <h3>Products</h3>
+          <button class="library-item" data-question="What are the best-selling products by quantity?">What are the best-selling products by quantity?</button>
+          <button class="library-item" data-question="How many distinct products were sold?">How many distinct products were sold?</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
