@@ -1,39 +1,42 @@
 # databricks-retail-lakehouse
 
-Retail lakehouse on Databricks Free Edition, built from the UCI "Online Retail" dataset (UK online retailer transactions, Dec 2010–Dec 2011). Bronze → staging → marts pipeline plus a text-to-SQL chat app over the marts, fully deployed and orchestrated as code — no manual clicks in the Databricks UI beyond a one-time Free Edition restriction (see [Notes](#notes)).
+A retail lakehouse on Databricks, built end-to-end from the UCI "Online Retail" dataset (UK online retailer transactions, Dec 2010–Dec 2011): bronze → staging → marts pipeline, plus a text-to-SQL chat app over the marts.
+
+Everything — Unity Catalog governance, schema/job deployment, transformations — is defined as code and deployed via CLI. No manual configuration in the Databricks UI, aside from one Free Edition restriction noted below.
 
 ## Architecture
 
-```
-Online Retail.xlsx (Volume)
-        |
-        v
-  bronze.online_retail        (notebook, PySpark, full overwrite)
-        |
-        v
-  staging.stg_online_retail   (dbt, view)
-        |
-        v
-  marts.dim_products / dim_customers / dim_dates / fct_sales   (dbt, table)
-        |
-        v
-  Text-to-SQL chat app (FastAPI + ai_query)
+```mermaid
+flowchart LR
+    XLSX(["Online Retail.xlsx"]) -->|upload| Volume[("bronze.raw_landing<br/>(Volume)")]
+    Volume -->|"bronze notebook<br/>(PySpark)"| Bronze[("bronze.online_retail")]
+    Bronze -->|"dbt<br/>(staging)"| Staging[("staging.stg_online_retail")]
+    Staging -->|"dbt<br/>(marts)"| Marts[("marts.*<br/>dim_products / dim_customers<br/>dim_dates / fct_sales")]
+    Marts -->|"ai_query"| App(["Text-to-SQL<br/>chat app"])
 ```
 
-Governance and deployment are code-driven:
-- **Terraform** provisions the Unity Catalog catalog and grants
-- **Databricks Asset Bundles** provision the schemas, volume, and the `retail_pipeline` job (two chained tasks: bronze ingestion, then `dbt run`/`dbt test`)
+| Layer | Built by | What it does |
+|---|---|---|
+| Volume | Databricks Asset Bundle | Landing zone for the raw file — no processing |
+| Bronze | Notebook, PySpark | Raw ingestion, explicit schema, no business rules |
+| Staging | dbt (view) | Rename, type, surrogate key |
+| Marts | dbt (table) | Star schema — 3 dimensions + 1 fact table, tested |
+| App | FastAPI + `ai_query` | Natural language queries over the marts, read-only |
 
-See [docs/architecture.md](docs/architecture.md) for the full diagram and layer-by-layer breakdown.
+**Orchestration:** one Databricks Job, `retail_pipeline`, with two chained tasks (bronze notebook, then `dbt run` + `dbt test`), deployed via a Databricks Asset Bundle and triggered with a single command.
+
+**Governance:** Terraform owns the Unity Catalog catalog (`retail`) and its grants — the one Unity Catalog object the Bundle can't manage, since catalog creation is account-level, not workspace-level.
 
 ## Stack
 
-- **Databricks Free Edition** - Unity Catalog, serverless compute, SQL Warehouse, Foundation Model APIs
-- **Terraform** - Unity Catalog catalog + grants
-- **Databricks Asset Bundles** - schemas, volume, job/task orchestration
-- **PySpark** - bronze ingestion notebook
-- **dbt-databricks** - staging + marts transformations, with tests
-- **FastAPI** - text-to-SQL chat app, backed by `ai_query()`
+| | |
+|---|---|
+| Platform | Databricks Free Edition — Unity Catalog, serverless compute, SQL Warehouse, Foundation Model APIs |
+| Governance | Terraform |
+| Deployment | Databricks Asset Bundles |
+| Ingestion | PySpark |
+| Transformation | dbt-databricks |
+| AI feature | FastAPI, `ai_query()` (Llama 3.1, served by Databricks) |
 
 ## Repo structure
 
@@ -90,9 +93,9 @@ Open `http://127.0.0.1:8000`.
 
 ## Notes
 
-- Catalog creation is blocked via API/Terraform on Free Edition ("Please use the UI to create a catalog with Default Storage") — the catalog was created once via the UI, then `terraform import`ed so every change since is code-managed.
+- Catalog creation is blocked via API/Terraform on Free Edition ("Please use the UI to create a catalog with Default Storage") — the catalog was created once via the UI, then `terraform import`ed, so every change since is code-managed.
 - This workspace only supports serverless compute; the native Databricks `dbt_task` job type doesn't work here (fails on cluster launch), so the dbt step runs from a plain notebook task instead (`notebooks/02_dbt_transform.py`).
 
 ## Status
 
-Bronze → staging → marts pipeline, orchestration, and the text-to-SQL app are all working end-to-end. Remaining: architecture diagram in `docs/`, recorded demo.
+Bronze → staging → marts pipeline, orchestration, and the text-to-SQL app are all working end-to-end. Remaining: a recorded demo.
