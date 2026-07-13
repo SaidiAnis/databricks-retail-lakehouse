@@ -4,21 +4,19 @@ A retail lakehouse on Databricks, built end-to-end from the UCI "Online Retail" 
 
 Everything — Unity Catalog governance, schema/job deployment, transformations — is defined as code and deployed via CLI. No manual configuration in the Databricks UI, aside from one Free Edition restriction noted below.
 
+![Text-to-SQL demo](docs/Text_to_SQL.gif)
+
 ## Architecture
 
 ![Architecture diagram](docs/Diagram_retail.png)
 
-| Layer | Built by | What it does |
-|---|---|---|
-| Volume | Databricks Asset Bundle | Landing zone for the raw file — no processing |
-| Bronze | Notebook, PySpark | Raw ingestion, explicit schema, no business rules |
-| Staging | dbt (view) | Rename, type, surrogate key |
-| Marts | dbt (table) | Star schema — 3 dimensions + 1 fact table, tested |
-| App | FastAPI + `ai_query` | Natural language queries over the marts, read-only |
-
-**Orchestration:** one Databricks Job, `retail_pipeline`, with two chained tasks (bronze notebook, then `dbt run` + `dbt test`), deployed via a Databricks Asset Bundle and triggered with a single command.
-
-**Governance:** Terraform owns the Unity Catalog catalog (`retail`) and its grants — the one Unity Catalog object the Bundle can't manage, since catalog creation is account-level, not workspace-level.
+- **Online Retail.xlsx**: source file, uploaded once to a Unity Catalog Volume (`bronze.raw_landing`).
+- **Bronze notebook (PySpark)**: reads the file from the Volume, writes it as-is to `bronze.online_retail` — explicit schema, no business rules.
+- **dbt (staging)**: renames, types, and adds a surrogate key — `staging.stg_online_retail`.
+- **dbt (marts)**: builds the star schema — `dim_products`, `dim_customers`, `dim_dates`, `fct_sales`.
+- **Text-to-SQL chat app (FastAPI + `ai_query`)**: lets anyone query the marts in plain English — the LLM only generates SQL, validated read-only before it ever runs.
+- **Terraform**: provisions the Unity Catalog catalog (`retail`) and its grants — the one object the Bundle can't manage, since catalog creation is account-level, not workspace-level.
+- **Databricks Asset Bundle**: provisions the schemas, volume, and the `retail_pipeline` job, and orchestrates the two chained tasks (bronze ingestion, then `dbt run` + `dbt test`).
 
 ## Stack
 
