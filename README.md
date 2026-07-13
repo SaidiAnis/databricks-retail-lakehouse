@@ -38,6 +38,7 @@ notebooks/                              Bronze ingestion + dbt runner notebooks
 dbt/                                    dbt project (staging/marts models, tests)
 app/                                    Text-to-SQL chat app (FastAPI + static frontend)
 data/raw/                               Source dataset
+docs/                                   Architecture diagram (source + export), demo GIF
 ```
 
 ## Running it
@@ -89,4 +90,4 @@ Open `http://127.0.0.1:8000`.
 
 ## Status
 
-Bronze → staging → marts pipeline, orchestration, and the text-to-SQL app are all working end-to-end. Remaining: a recorded demo.
+Bronze → staging → marts pipeline, orchestration, and the text-to-SQL app are all working end-to-end and deployed.
