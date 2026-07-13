@@ -6,14 +6,7 @@ Everything — Unity Catalog governance, schema/job deployment, transformations 
 
 ## Architecture
 
-```mermaid
-flowchart LR
-    XLSX(["Online Retail.xlsx"]) -->|upload| Volume[("bronze.raw_landing<br/>(Volume)")]
-    Volume -->|"bronze notebook<br/>(PySpark)"| Bronze[("bronze.online_retail")]
-    Bronze -->|"dbt<br/>(staging)"| Staging[("staging.stg_online_retail")]
-    Staging -->|"dbt<br/>(marts)"| Marts[("marts.*<br/>dim_products / dim_customers<br/>dim_dates / fct_sales")]
-    Marts -->|"ai_query"| App(["Text-to-SQL<br/>chat app"])
-```
+![Architecture diagram](docs/Diagram_retail.png)
 
 | Layer | Built by | What it does |
 |---|---|---|
